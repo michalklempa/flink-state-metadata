@@ -13,3 +13,6 @@ Java and Maven
 ```
 mvn clean package
 ```
+
+This repository is part of the example how-to guide:
+https://michalklempa.com/2020/03/move-flink-savepoint-to-different-s3-bucket/
