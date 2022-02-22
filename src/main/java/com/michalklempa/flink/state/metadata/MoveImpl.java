@@ -1,12 +1,11 @@
 package com.michalklempa.flink.state.metadata;
 
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.runtime.checkpoint.Checkpoints;
+import org.apache.flink.runtime.checkpoint.metadata.CheckpointMetadata;
 import org.apache.flink.runtime.checkpoint.MasterState;
 import org.apache.flink.runtime.checkpoint.OperatorState;
 import org.apache.flink.runtime.checkpoint.OperatorSubtaskState;
 import org.apache.flink.runtime.checkpoint.StateObjectCollection;
-import org.apache.flink.runtime.checkpoint.savepoint.SavepointV2;
 import org.apache.flink.runtime.state.IncrementalRemoteKeyedStateHandle;
 import org.apache.flink.runtime.state.KeyGroupsStateHandle;
 import org.apache.flink.runtime.state.KeyedStateHandle;
@@ -31,13 +30,13 @@ public class MoveImpl extends Move.AbstractMove {
     protected Path sourcePath;
     protected Path destinationPath;
 
-    public MoveImpl(final SavepointV2 savepoint, final String sourceUri, final String destinationUri) {
+    public MoveImpl(final CheckpointMetadata savepoint, final String sourceUri, final String destinationUri) {
         super(savepoint, sourceUri, destinationUri);
         this.sourcePath = new Path(sourceUri);
         this.destinationPath = new Path(destinationUri);
     }
 
-    public SavepointV2 convert() throws IOException {
+    public CheckpointMetadata convert() throws IOException {
         final List<MasterState> masterStates = new ArrayList<>(savepoint.getMasterStates());
 
         List<OperatorState> operatorStates = new ArrayList<>(savepoint.getOperatorStates().size());
@@ -58,7 +57,7 @@ public class MoveImpl extends Move.AbstractMove {
             }
         }
 
-        return new SavepointV2(savepoint.getCheckpointId(), operatorStates, masterStates);
+        return new CheckpointMetadata(savepoint.getCheckpointId(), operatorStates, masterStates);
     }
 
     private OperatorSubtaskState convertSubtaskState(OperatorSubtaskState _operatorSubtaskState) throws IOException {

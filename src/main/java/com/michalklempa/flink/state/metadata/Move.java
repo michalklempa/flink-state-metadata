@@ -15,10 +15,10 @@
  */
 package com.michalklempa.flink.state.metadata;
 
-import org.apache.flink.runtime.checkpoint.savepoint.SavepointV2;
+import org.apache.flink.runtime.checkpoint.metadata.CheckpointMetadata;
 
 public interface Move {
-    default SavepointV2 move(SavepointV2 savepoint, String sourceUri, String destinationUri) throws Exception {
+    default CheckpointMetadata move(CheckpointMetadata savepoint, String sourceUri, String destinationUri) throws Exception {
         return new MoveImpl(savepoint, sourceUri, destinationUri).convert();
     }
 
@@ -26,16 +26,16 @@ public interface Move {
     }
 
     abstract class AbstractMove {
-        protected final SavepointV2 savepoint;
+        protected final CheckpointMetadata savepoint;
         protected final String sourceUri;
         protected final String destinationUri;
 
-        public AbstractMove(final SavepointV2 savepoint, final String sourceUri, final String destinationUri) {
+        public AbstractMove(final CheckpointMetadata savepoint, final String sourceUri, final String destinationUri) {
             this.savepoint = savepoint;
             this.sourceUri = sourceUri;
             this.destinationUri = destinationUri;
         }
 
-        public abstract SavepointV2 convert() throws Exception;
+        public abstract CheckpointMetadata convert() throws Exception;
     }
 }

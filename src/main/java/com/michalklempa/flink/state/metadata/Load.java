@@ -16,17 +16,17 @@
 package com.michalklempa.flink.state.metadata;
 
 import org.apache.flink.runtime.checkpoint.Checkpoints;
-import org.apache.flink.runtime.checkpoint.savepoint.SavepointV2;
-
+import org.apache.flink.runtime.checkpoint.metadata.CheckpointMetadata;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 
 public interface Load {
-    default SavepointV2 load(String filename) throws Exception {
-        SavepointV2 result = null;
+    default CheckpointMetadata load(String filename) throws Exception {
+        CheckpointMetadata result = null;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(filename))) {
-            result = (SavepointV2) Checkpoints.loadCheckpointMetadata(dataInputStream, classLoader);
+            String externalPointer = null;
+            result = Checkpoints.loadCheckpointMetadata(dataInputStream, classLoader, externalPointer);
         }
         return result;
     }
