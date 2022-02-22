@@ -15,16 +15,17 @@
  */
 package com.michalklempa.flink.state.metadata;
 
+import org.apache.flink.runtime.checkpoint.metadata.CheckpointMetadata;
 import org.apache.flink.runtime.checkpoint.Checkpoints;
-import org.apache.flink.runtime.checkpoint.savepoint.SavepointV2;
+
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 
 public interface Save {
-    default void save(SavepointV2 savepointV2, String filename) throws Exception {
+    default void save(CheckpointMetadata checkpointMetadata, String filename) throws Exception {
         try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(filename))) {
-            Checkpoints.storeCheckpointMetadata(savepointV2, dataOutputStream);
+            Checkpoints.storeCheckpointMetadata(checkpointMetadata, dataOutputStream);
         }
     }
 
